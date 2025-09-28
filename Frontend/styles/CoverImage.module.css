@@ -1,0 +1,49 @@
+.image {
+  object-fit: cover;
+  border-radius: 0.5rem; /* rounded-lg */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2); /* shadow-md */
+}
+
+/* container when no image */
+.coverBox {
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2); /* shadow-md */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  font-size: 1.25rem; /* text-xl */
+  background: gray;
+}
+
+/* text inside the gradient card */
+.textWrapper {
+  text-align: center;
+}
+
+.initials {
+  font-size: 1.5rem; /* text-2xl */
+}
+
+.author {
+  font-size: 0.75rem; /* text-xs */
+  margin-top: 0.25rem;
+}
+
+/* gradient backgrounds */
+.gradient1 {
+  background: linear-gradient(to bottom right, #6366f1, #a855f7);
+}
+
+.gradient2 {
+  background: linear-gradient(to bottom right, #f43f5e, #fb923c);
+}
+
+.gradient3 {
+  background: linear-gradient(to bottom right, #34d399, #14b8a6);
+}
+
+.gradient4 {
+  background: linear-gradient(to bottom right, #38bdf8, #6366f1);
+}
