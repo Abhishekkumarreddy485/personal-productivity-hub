@@ -1,0 +1,65 @@
+import {useEffect, useState} from 'react';
+import Link from 'next/link';
+
+const API = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:4000';
+
+function PlaceholderCover({title}){
+  const initials = title ? title.split(' ').slice(0,2).map(s=>s[0]).join('') : 'BK';
+  return (
+    <div className="w-32 h-44 rounded-md flex items-center justify-center text-white text-xl font-bold"
+         style={{background:'linear-gradient(135deg,#7dd3fc,#60a5fa)'}}>
+      {initials}
+    </div>
+  )
+}
+
+export default function Books(){
+  const [books,setBooks] = useState([]);
+  const [form,setForm] = useState({title:'',author:'',year:'',summary:'',imageUrl:''});
+  useEffect(()=>{ fetch(API+'/api/books').then(r=>r.json()).then(setBooks); },[]);
+  async function add(e){
+    e.preventDefault();
+    const token = localStorage.getItem('pph_token') || '';
+    const res = await fetch(API+'/api/books', {
+      method:'POST', headers:{'Content-Type':'application/json', Authorization: token ? 'Bearer '+token : ''},
+      body:JSON.stringify(form)
+    });
+    if(res.ok){ const b = await res.json(); setBooks([b,...books]); setForm({title:'',author:'',year:'',summary:'',imageUrl:''}); }
+    else { alert('Error: Are you logged in?'); }
+  }
+
+  return (
+    <div className="p-6">
+      <h2 className="text-2xl font-bold mb-4">Bookstore</h2>
+      <form onSubmit={add} className="card mb-6 grid grid-cols-1 md:grid-cols-2 gap-3">
+        <input placeholder="Title" value={form.title} onChange={e=>setForm({...form,title:e.target.value})} className="p-2 border rounded" required />
+        <input placeholder="Author" value={form.author} onChange={e=>setForm({...form,author:e.target.value})} className="p-2 border rounded" />
+        <input placeholder="Year" value={form.year} onChange={e=>setForm({...form,year:e.target.value})} className="p-2 border rounded" />
+        <input placeholder="Image URL (optional)" value={form.imageUrl} onChange={e=>setForm({...form,imageUrl:e.target.value})} className="p-2 border rounded" />
+        <textarea placeholder="Summary" value={form.summary} onChange={e=>setForm({...form,summary:e.target.value})} className="p-2 border rounded md:col-span-2" />
+        <div className="md:col-span-2">
+          <button className="px-4 py-2 rounded bg-sky-600 text-white">Add Book</button>
+        </div>
+      </form>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {books.map(b=>(
+          <div key={b._id} className="card flex gap-4">
+            {b.imageUrl ? <img src={b.imageUrl} alt={b.title} className="w-32 h-44 object-cover rounded-md"/> : <PlaceholderCover title={b.title} />}
+            <div>
+              <h3 className="font-semibold">{b.title}</h3>
+              <p className="text-sm text-slate-600">{b.author} • {b.year}</p>
+              <p className="mt-2 text-sm">{b.summary?.slice(0,140)}</p>
+                  <div className="mt-3 flex gap-2">
+              <Link href={`/books/${b._id}`} className="px-3 py-1 border rounded">
+                Read
+              </Link>
+                <button className="px-3 py-1 border rounded">Audiobook</button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}

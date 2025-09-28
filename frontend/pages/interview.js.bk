@@ -1,0 +1,123 @@
+import { useEffect, useState } from "react";
+import Layout from "../components/Layout";
+
+export default function InterviewPage() {
+  const [questions, setQuestions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [form, setForm] = useState({
+    question: "",
+    answer: "",
+    tags: "",
+    module: "Technical",
+    difficulty: "Medium",
+  });
+
+  // Fetch questions from backend
+  useEffect(() => {
+    async function fetchQuestions() {
+  try {
+    const token = localStorage.getItem("token");
+    const res = await fetch("http://localhost:4000/api/interview-questions", {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!res.ok) {
+      throw new Error(`HTTP ${res.status}`);
+    }
+
+    const data = await res.json();
+    setQuestions(Array.isArray(data) ? data : []);
+  } catch (err) {
+    console.error("Error fetching questions:", err);
+    setQuestions([]); // fallback to empty array
+  } finally {
+    setLoading(false);
+  }
+}
+
+    fetchQuestions();
+  }, []);
+
+  // Handle form submit
+  async function handleSubmit(e) {
+    e.preventDefault();
+    try {
+      const res = await fetch("http://localhost:4000/api/interview-questions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...form,
+          tags: form.tags.split(",").map(t => t.trim()),
+          createdBy: "68d0e6c609bffa2b19a5284c", // hardcoded user for now
+        }),
+      });
+      const newQ = await res.json();
+      setQuestions([newQ, ...questions]);
+      setForm({ question: "", answer: "", tags: "", module: "Technical", difficulty: "Medium" });
+    } catch (err) {
+      console.error("Error saving question:", err);
+    }
+  }
+
+  return (
+    <Layout>
+      <div className="p-6 max-w-3xl mx-auto">
+        <h2 className="text-2xl font-bold mb-4">Interview Questions</h2>
+
+        {/* Add Question Form */}
+        <form onSubmit={handleSubmit} className="mb-6 space-y-3 bg-white shadow p-4 rounded">
+          <input
+            type="text"
+            placeholder="Question"
+            value={form.question}
+            onChange={(e) => setForm({ ...form, question: e.target.value })}
+            className="w-full border p-2 rounded"
+            required
+          />
+          <textarea
+            placeholder="Answer"
+            value={form.answer}
+            onChange={(e) => setForm({ ...form, answer: e.target.value })}
+            className="w-full border p-2 rounded"
+            rows={3}
+            required
+          />
+          <input
+            type="text"
+            placeholder="Tags (comma separated)"
+            value={form.tags}
+            onChange={(e) => setForm({ ...form, tags: e.target.value })}
+            className="w-full border p-2 rounded"
+          />
+          <button type="submit" className="bg-indigo-600 text-white px-4 py-2 rounded">
+            Add Question
+          </button>
+        </form>
+
+        {/* Questions List */}
+        {loading ? (
+          <p>Loading...</p>
+        ) : (
+          <div className="space-y-4">
+            {questions.map((q) => (
+              <div key={q._id} className="border p-4 rounded bg-gray-50 shadow-sm">
+                <h3 className="font-semibold">{q.question}</h3>
+                <p className="text-gray-700 mt-1">{q.answer}</p>
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {q.tags?.map((tag, idx) => (
+                    <span key={idx} className="text-sm bg-indigo-100 text-indigo-700 px-2 py-1 rounded">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </Layout>
+  );
+}
