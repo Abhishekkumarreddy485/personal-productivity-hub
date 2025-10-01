@@ -17,6 +17,7 @@ app.use(bodyParser.json({ limit: '4mb' }));
 app.use('/api/auth', authRoutes);
 app.use('/api/books', booksRoutes);
 app.use('/api', quotesRoutes);
+// app.use('/api/books', quotesRoutes);
 app.use('/api/interview-questions', interviewQuestionsRoutes);
 
 const PORT = process.env.PORT || 4000;
