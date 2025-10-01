@@ -2,7 +2,7 @@
 import Layout from '../../components/Layout';
 import API, { setAuthToken } from '../../lib/api';
 import { useRouter } from 'next/router';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import styles from '../../styles/BookDetail.module.css';
 
 export default function BookDetail() {
@@ -11,6 +11,10 @@ export default function BookDetail() {
   const [book, setBook] = useState(null);
   const [quotes, setQuotes] = useState([]);
   const [newQuote, setNewQuote] = useState('');
+  const [newImage, setNewImage] = useState(null);
+
+  // 👇 ref for file input
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -25,21 +29,40 @@ export default function BookDetail() {
     try {
       const res = await API.get(`/api/books/${id}`);
       setBook(res.data);
-    } catch (err) { console.error(err); }
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   async function fetchQuotes() {
     try {
       const res = await API.get(`/api/books/${id}/quotes`);
       setQuotes(res.data);
-    } catch (err) { console.error(err); }
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   async function handleAddQuote() {
-    if (!newQuote.trim()) return;
+    if (!newQuote.trim() && !newImage) return;
+
     try {
-      await API.post(`/api/books/${id}/quotes`, { text: newQuote });
+      const formData = new FormData();
+      if (newQuote.trim()) formData.append('text', newQuote);
+      if (newImage) formData.append('image', newImage);
+
+      await API.post(`/api/books/${id}/quotes`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+
       setNewQuote('');
+      setNewImage(null);
+
+      // 👇 clear file input value so filename disappears
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+
       fetchQuotes();
     } catch (err) {
       console.error(err);
@@ -51,7 +74,7 @@ export default function BookDetail() {
     try {
       const res = await API.get(`/api/books/${id}/export`, {
         params: { format },
-        responseType: 'blob'
+        responseType: 'blob',
       });
       const blob = new Blob([res.data], { type: res.headers['content-type'] });
       const url = window.URL.createObjectURL(blob);
@@ -61,12 +84,14 @@ export default function BookDetail() {
       document.body.appendChild(a);
       a.click();
       a.remove();
-    } catch (err) { console.error(err); }
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   async function handleToggleFavorite(id) {
     try {
-      const quote = quotes.find(q => q._id === id);
+      const quote = quotes.find((q) => q._id === id);
       await API.put(`/api/quotes/${id}`, { favorite: !quote.favorite });
       fetchQuotes();
     } catch (err) {
@@ -97,7 +122,12 @@ export default function BookDetail() {
     }
   }
 
-  if (!book) return <Layout><div>Loading...</div></Layout>;
+  if (!book)
+    return (
+      <Layout>
+        <div>Loading...</div>
+      </Layout>
+    );
 
   return (
     <Layout>
@@ -111,7 +141,9 @@ export default function BookDetail() {
         </div>
         <div className={styles.content}>
           <h2 className={styles.title}>{book.title}</h2>
-          <p className={styles.meta}>{book.author} • {book.year}</p>
+          <p className={styles.meta}>
+            {book.author} • {book.year}
+          </p>
           <p className={styles.summary}>{book.summary}</p>
         </div>
       </div>
@@ -121,25 +153,93 @@ export default function BookDetail() {
 
         <div className={styles.quotesGrid}>
           {quotes.map((q, idx) => (
-            <div key={q._id} className={`${styles.quoteCard} ${styles[`bg${idx % 5}`]}`}>
-              <div className={styles.quoteActions}>
-                <button onClick={() => handleToggleFavorite(q._id)} className={styles.favoriteBtn}>
-                  {q.favorite ? '★' : '☆'}
-                </button>
-                <button onClick={() => handleEditQuote(q)} className={styles.editBtn}>Edit</button>
-                <button onClick={() => handleDeleteQuote(q._id)} className={styles.deleteBtn}>Delete</button>
-              </div>
-              <p className={styles.quoteText}>
-                {q.text.split('\n').map((line, i) => (
-                  <span key={i}>{line}<br /></span>
-                ))}
-              </p>
-              <div className={styles.quoteAuthor}>{book.author}</div>
-              <div className={styles.quoteDate}>{new Date(q.createdAt).toLocaleString()}</div>
-            </div>
+            // <div
+            //   key={q._id}
+            //   className={`${styles.quoteCard} ${styles[`bg${idx % 5}`]}`}
+            // >
+            //   <div className={styles.quoteActions}>
+            //     <button
+            //       onClick={() => handleToggleFavorite(q._id)}
+            //       className={styles.favoriteBtn}
+            //     >
+            //       {q.favorite ? '★' : '☆'}
+            //     </button>
+            //     <button
+            //       onClick={() => handleEditQuote(q)}
+            //       className={styles.editBtn}
+            //     >
+            //       Edit
+            //     </button>
+            //     <button
+            //       onClick={() => handleDeleteQuote(q._id)}
+            //       className={styles.deleteBtn}
+            //     >
+            //       Delete
+            //     </button>
+            //   </div>
+            //   <p className={styles.quoteText}>
+            //     {q.imageUrl ? (
+            //       <img
+            //         src={q.imageUrl}
+            //         alt="Quote"
+            //         className={styles.quoteImage}
+            //       />
+            //     ) : q.text ? (
+            //       q.text.split('\n').map((line, i) => (
+            //         <span key={i}>
+            //           {line}
+            //           <br />
+            //         </span>
+            //       ))
+            //     ) : (
+            //       <em>No content</em>
+            //     )}
+            //   </p>
+            //   <div className={styles.quoteAuthor}>{book.author}</div>
+            //   <div className={styles.quoteDate}>
+            //     {new Date(q.createdAt).toLocaleString()}
+            //   </div>
+            // </div>
+            <div
+  key={q._id}
+  className={`${styles.quoteCard} ${q.imageUrl ? styles.imageQuote : styles[`bg${idx % 5}`]}`}
+>
+  <div className={styles.quoteActions}>
+    <button onClick={() => handleToggleFavorite(q._id)} className={styles.favoriteBtn}>
+      {q.favorite ? '★' : '☆'}
+    </button>
+    <button onClick={() => handleEditQuote(q)} className={styles.editBtn}>
+      Edit
+    </button>
+    <button onClick={() => handleDeleteQuote(q._id)} className={styles.deleteBtn}>
+      Delete
+    </button>
+  </div>
+
+  {q.imageUrl ? (
+    <img src={q.imageUrl} alt="Quote" className={styles.quoteImage} />
+  ) : q.text ? (
+    <p className={styles.quoteText}>
+      {q.text.split('\n').map((line, i) => (
+        <span key={i}>
+          {line}
+          <br />
+        </span>
+      ))}
+    </p>
+  ) : (
+    <em>No content</em>
+  )}
+
+  <div className={styles.quoteAuthor}>{book.author}</div>
+  <div className={styles.quoteDate}>{new Date(q.createdAt).toLocaleString()}</div>
+</div>
+
           ))}
 
-          {quotes.length === 0 && <div className={styles.noQuotes}>No quotes yet.</div>}
+          {quotes.length === 0 && (
+            <div className={styles.noQuotes}>No quotes yet.</div>
+          )}
         </div>
       </section>
 
@@ -148,18 +248,41 @@ export default function BookDetail() {
         <div className={styles.addQuote}>
           <textarea
             value={newQuote}
-            onChange={e => setNewQuote(e.target.value)}
-            placeholder="Type or paste a quote (supports multi-line)..."
+            onChange={(e) => setNewQuote(e.target.value)}
+            placeholder="Type or paste a quote..."
             className={styles.textarea}
             rows={3}
           />
-          <button onClick={handleAddQuote} className={styles.uploadBtn}>Upload Quote</button>
+          <input
+            type="file"
+            accept="image/*"
+            ref={fileInputRef} // 👈 ref here
+            onChange={(e) => setNewImage(e.target.files[0])}
+          />
+          <button onClick={handleAddQuote} className={styles.uploadBtn}>
+            Upload Quote
+          </button>
         </div>
 
         <div className={styles.buttons}>
-          <button onClick={() => handleExport('txt')} className={`${styles.btn} ${styles.btnTxt}`}>Export TXT</button>
-          <button onClick={() => handleExport('csv')} className={`${styles.btn} ${styles.btnCsv}`}>Export CSV</button>
-          <button onClick={() => handleExport('pdf')} className={`${styles.btn} ${styles.btnPdf}`}>Export PDF</button>
+          <button
+            onClick={() => handleExport('txt')}
+            className={`${styles.btn} ${styles.btnTxt}`}
+          >
+            Export TXT
+          </button>
+          <button
+            onClick={() => handleExport('csv')}
+            className={`${styles.btn} ${styles.btnCsv}`}
+          >
+            Export CSV
+          </button>
+          <button
+            onClick={() => handleExport('pdf')}
+            className={`${styles.btn} ${styles.btnPdf}`}
+          >
+            Export PDF
+          </button>
         </div>
       </div>
     </Layout>

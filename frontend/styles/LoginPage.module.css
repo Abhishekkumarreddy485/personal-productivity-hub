@@ -1,0 +1,210 @@
+/* Full page light pastel gradient background */
+.container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(-45deg, #a1c4fd, #c2e9fb, #fbc2eb, #fcd6a1);
+  background-size: 400% 400%;
+  animation: gradientShift 15s ease infinite;
+  font-family: 'Poppins', sans-serif;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Floating soft dots */
+.container::before {
+  content: '';
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.2) 2px, transparent 2px);
+  background-size: 50px 50px;
+  animation: particlesMove 60s linear infinite;
+  pointer-events: none;
+  z-index: 0;
+  transform: translate(-25%, -25%);
+}
+
+/* Light glass card */
+.card {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(16px) saturate(180%);
+  border-radius: 20px;
+  padding: 45px 40px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 420px;
+  animation: fadeIn 0.8s ease-in-out;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  position: relative;
+  z-index: 1;
+  transition: transform 0.3s ease;
+}
+
+.card:hover {
+  transform: perspective(1000px) rotateX(2deg) rotateY(-2deg) scale(1.01);
+}
+
+/* Soft animated border */
+.card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  padding: 2px;
+  background: linear-gradient(135deg, #a1c4fd, #c2e9fb, #fcd6a1, #fbc2eb);
+  background-size: 300% 300%;
+  animation: borderGlow 10s linear infinite;
+  -webkit-mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: destination-out;
+  mask-composite: exclude;
+  z-index: -1;
+}
+
+/* Title */
+.title {
+  font-size: 28px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 30px;
+  color: #333;
+  text-shadow: 0 0 6px rgba(161, 196, 253, 0.6);
+}
+
+/* Form layout */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* Floating labels */
+.input-group {
+  position: relative;
+}
+
+.input {
+  width: 100%;
+  padding: 14px 15px;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  background: rgba(255, 255, 255, 0.9);
+  transition: 0.3s ease;
+  outline: none;
+}
+
+.input:focus {
+  box-shadow: 0 0 10px rgba(161, 196, 253, 0.6);
+}
+
+.input-group label {
+  position: absolute;
+  top: 50%;
+  left: 15px;
+  transform: translateY(-50%);
+  color: #777;
+  font-size: 14px;
+  pointer-events: none;
+  transition: 0.3s ease;
+}
+
+.input:focus + label,
+.input:not(:placeholder-shown) + label {
+  top: 8px;
+  font-size: 12px;
+  color: #2575fc;
+}
+
+/* Error */
+.error {
+  color: #e63946;
+  font-size: 13px;
+  text-align: center;
+  margin-top: -5px;
+}
+
+/* Light button with animated gradient */
+.button {
+  padding: 14px;
+  background: linear-gradient(270deg, #a1c4fd, #c2e9fb, #fcd6a1);
+  background-size: 400% 400%;
+  border: none;
+  border-radius: 10px;
+  color: #333;
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+  animation: buttonGradient 8s ease infinite;
+  box-shadow: 0 4px 12px rgba(161, 196, 253, 0.4);
+}
+
+.button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(161, 196, 253, 0.6);
+}
+
+.button:disabled {
+  background: #e0e6f7;
+  color: #888;
+  cursor: not-allowed;
+  animation: none;
+}
+
+/* Ripple effect */
+.button::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.5s ease, height 0.5s ease;
+}
+
+.button:active::after {
+  width: 220px;
+  height: 220px;
+}
+
+/* ===== Animations ===== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(25px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes borderGlow {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+}
+
+@keyframes buttonGradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes particlesMove {
+  0% { transform: translate(-25%, -25%) rotate(0deg); }
+  100% { transform: translate(-25%, -25%) rotate(360deg); }
+}
+

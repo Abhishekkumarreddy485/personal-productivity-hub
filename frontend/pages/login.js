@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import API, { setAuthToken } from '../lib/api'; // ✅ use shared API
+import API, { setAuthToken } from '../lib/api';
+import styles from '../styles/LoginPage.module.css';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -19,7 +20,7 @@ export default function LoginPage() {
 
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('user', JSON.stringify(res.data.user));
-      setAuthToken(res.data.token); // ✅ set default header
+      setAuthToken(res.data.token);
 
       router.replace('/');
     } catch (err) {
@@ -30,19 +31,17 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-700 via-indigo-800 to-gray-900">
-      <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md">
-        <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">
-          Welcome Back
-        </h1>
-        <form onSubmit={handleSubmit} className="space-y-4">
+    <div className={styles.container}>
+      <div className={styles.card}>
+        <h1 className={styles.title}>Welcome Back</h1>
+        <form onSubmit={handleSubmit} className={styles.form}>
           <input
             type="email"
-            placeholder="Email"
+            placeholder="Email Address"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+            className={styles.input}
           />
           <input
             type="password"
@@ -50,15 +49,13 @@ export default function LoginPage() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+            className={styles.input}
           />
-          {error && (
-            <p className="text-red-600 text-sm text-center">{error}</p>
-          )}
+          {error && <p className={styles.error}>{error}</p>}
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold shadow-md hover:bg-indigo-700 transition disabled:opacity-50"
+            className={styles.button}
           >
             {loading ? 'Logging in...' : 'Login'}
           </button>
