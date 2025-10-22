@@ -3,6 +3,7 @@ import Layout from '../../components/Layout';
 import API, { setAuthToken } from '../../lib/api';
 import { useRouter } from 'next/router';
 import { useState, useEffect, useRef } from 'react';
+import PDFViewer from '../../components/PDFViewer';
 import styles from '../../styles/BookDetail.module.css';
 
 export default function BookDetail() {
@@ -12,6 +13,8 @@ export default function BookDetail() {
   const [quotes, setQuotes] = useState([]);
   const [newQuote, setNewQuote] = useState('');
   const [newImage, setNewImage] = useState(null);
+  const [pdfUrl, setPdfUrl] = useState(null);
+
 
   // 👇 ref for file input
   const fileInputRef = useRef(null);
@@ -112,15 +115,13 @@ export default function BookDetail() {
   }
 
   async function handleDeleteQuote(id) {
-    if (confirm('Are you sure you want to delete this quote?')) {
-      try {
-        await API.delete(`/api/quotes/${id}`);
-        fetchQuotes();
-      } catch (err) {
-        console.error(err);
-      }
-    }
+  try {
+    await API.delete(`/api/quotes/${id}`);
+    fetchQuotes(); // Refresh the list after successful deletion
+  } catch (err) {
+    console.error(err);
   }
+}
 
   if (!book)
     return (
@@ -216,9 +217,17 @@ export default function BookDetail() {
     </button>
   </div>
 
-  {q.imageUrl ? (
-    <img src={q.imageUrl} alt="Quote" className={styles.quoteImage} />
-  ) : q.text ? (
+  {q.fileType === "image" ? (
+  <img src={q.fileUrl} alt="Quote" className={styles.quoteImage} />
+) : q.fileType === "pdf" ? (
+  <button
+  onClick={() => setPdfUrl(q.fileUrl)}
+  className={styles.pdfLink}
+>
+  📖 View PDF
+</button>
+
+) : q.text ? (
     <p className={styles.quoteText}>
       {q.text.split('\n').map((line, i) => (
         <span key={i}>
@@ -255,7 +264,7 @@ export default function BookDetail() {
           />
           <input
             type="file"
-            accept="image/*"
+            accept="image/*,.pdf"
             ref={fileInputRef} // 👈 ref here
             onChange={(e) => setNewImage(e.target.files[0])}
           />
@@ -285,6 +294,7 @@ export default function BookDetail() {
           </button>
         </div>
       </div>
+      {pdfUrl && <PDFViewer url={pdfUrl} onClose={() => setPdfUrl(null)} />}
     </Layout>
   );
 }
