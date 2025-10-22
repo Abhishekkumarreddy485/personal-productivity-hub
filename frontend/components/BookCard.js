@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import CoverImage from './CoverImage';
-import BookFormModal from './BookFormModal';
+import EditBookModal from './EditBookModal';
 import DeleteConfirmModal from './DeleteConfirmModal';
 import styles from '../styles/BookCard.module.css';
 import { FaTrashAlt, FaEdit } from 'react-icons/fa';
@@ -21,7 +21,7 @@ export default function BookCard({ book }) {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       });
-      // alert('Book deleted');
+      alert('Book deleted');
       router.reload();
     } catch (err) {
       console.error(err);
@@ -67,11 +67,11 @@ export default function BookCard({ book }) {
       </div>
 
       {showEditModal && (
-         <BookFormModal
-            book={book}
-            onClose={() => setShowEditModal(false)}
-            onSuccess={() => router.reload()}
-          />
+        <EditBookModal
+          book={book}
+          onClose={() => setShowEditModal(false)}
+          onUpdated={() => router.reload()}
+        />
       )}
 
       {showDeleteModal && (
@@ -85,4 +85,3 @@ export default function BookCard({ book }) {
     </>
   );
 }
-
