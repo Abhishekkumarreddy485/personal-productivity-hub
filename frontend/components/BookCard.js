@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import CoverImage from './CoverImage';
-import EditBookModal from './BookFormModal';
+import BookFormModal from './BookFormModal';
 import DeleteConfirmModal from './DeleteConfirmModal';
 import styles from '../styles/BookCard.module.css';
 import { FaTrashAlt, FaEdit } from 'react-icons/fa';
@@ -85,3 +85,4 @@ export default function BookCard({ book }) {
     </>
   );
 }
+
