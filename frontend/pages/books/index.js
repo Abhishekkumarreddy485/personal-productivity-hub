@@ -4,11 +4,13 @@ import API, { setAuthToken } from '../../lib/api';
 import { useEffect, useState } from 'react';
 import BookCard from '../../components/BookCard';
 import styles from '../../styles/BooksPage.module.css';
+import BookFormModal from '../../components/BookFormModal';
 
 export default function BooksPage() {
   const [books, setBooks] = useState([]);
   const [q, setQ] = useState('');
   const [onlyFav, setOnlyFav] = useState(false);
+  const [showCreateModal, setShowCreateModal] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -28,23 +30,23 @@ export default function BooksPage() {
     }
   }
 
-  async function handleAddSample() {
-    try {
-      await API.post('/api/books', {
-        title: 'Sample Book',
-        author: 'Author X',
-        year: 2023,
-        genre: 'Learning',
-        rating: 4,
-        summary: 'A sample book added from frontend.',
-        coverImageUrl: ''
-      });
-      fetchBooks();
-    } catch (err) {
-      console.error(err);
-      alert('Need to login to add a book. Create an account via /api/auth/register');
-    }
-  }
+  // async function handleAddSample() {
+  //   try {
+  //     await API.post('/api/books', {
+  //       title: 'Sample Book',
+  //       author: 'Author X',
+  //       year: 2023,
+  //       genre: 'Learning',
+  //       rating: 4,
+  //       summary: 'A sample book added from frontend.',
+  //       coverImageUrl: ''
+  //     });
+  //     fetchBooks();
+  //   } catch (err) {
+  //     console.error(err);
+  //     alert('Need to login to add a book. Create an account via /api/auth/register');
+  //   }
+  // }
 
   return (
     <Layout>
@@ -67,9 +69,9 @@ export default function BooksPage() {
           <span>Favorites only</span>
         </label>
         <div className={styles.addSampleWrapper}>
-          <button onClick={handleAddSample} className={styles.addSampleButton}>
-            Add Sample Book
-          </button>
+           <button onClick={() => setShowCreateModal(true)} className={styles.addSampleButton}>
+                Create New Book
+ </button>
         </div>
       </div>
 
@@ -81,6 +83,13 @@ export default function BooksPage() {
           <div className={styles.noBooks}>No books — try adding one</div>
         )}
       </div>
+      {showCreateModal && (
+          <BookFormModal
+            onClose={() => setShowCreateModal(false)}
+            onSuccess={fetchBooks}
+          />
+        )}
+
     </Layout>
   );
 }
