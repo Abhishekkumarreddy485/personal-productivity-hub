@@ -22,6 +22,48 @@ async function uploadToCloudinary(fileBuffer) {
 /**
  * POST /books/:bookId/quotes
  */
+// exports.createQuote = async (req, res) => {
+//   try {
+//     const owner = req.user._id;
+//     const bookId = req.params.bookId;
+//     const { text } = req.body;
+
+//     if (!text && !req.file) {
+//       return res.status(400).json({ message: 'Either text or image is required' });
+//     }
+
+//     const book = await Book.findById(bookId);
+//     if (!book) return res.status(404).json({ message: 'Book not found' });
+
+//     let imageUrl = null;
+//     let imageId = null;
+
+//     if (req.file) {
+//       const result = await uploadToCloudinary(req.file.buffer);
+//       imageUrl = result.secure_url;
+//       imageId = result.public_id;
+//     }
+
+//     const quote = await Quote.create({
+//       owner,
+//       book: bookId,
+//       text,
+//       imageUrl,
+//       imageId,
+//     });
+
+//     res.status(201).json(quote);
+//   } catch (err) {
+//     console.error('Error creating quote:', err);
+//     res.status(500).json({ message: 'Server error creating quote' });
+//   }
+// };
+
+// updated the code for pdfs
+
+/**
+ * POST /books/:bookId/quotes
+ */
 exports.createQuote = async (req, res) => {
   try {
     const owner = req.user._id;
@@ -29,35 +71,61 @@ exports.createQuote = async (req, res) => {
     const { text } = req.body;
 
     if (!text && !req.file) {
-      return res.status(400).json({ message: 'Either text or image is required' });
+      return res.status(400).json({ message: 'Either text or file is required' });
     }
 
     const book = await Book.findById(bookId);
     if (!book) return res.status(404).json({ message: 'Book not found' });
 
-    let imageUrl = null;
-    let imageId = null;
+    let fileUrl = null;
+    let fileId = null;
+    let fileType = null;
 
     if (req.file) {
-      const result = await uploadToCloudinary(req.file.buffer);
-      imageUrl = result.secure_url;
-      imageId = result.public_id;
+      // 👇 Detect file type based on MIME type
+      const isImage = req.file.mimetype.startsWith("image/");
+      const isPDF = req.file.mimetype === "application/pdf";
+
+      if (!isImage && !isPDF) {
+        return res.status(400).json({ message: "Only images or PDFs are allowed" });
+      }
+
+      // 👇 Upload with correct resource_type
+      const result = await new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+          {
+            folder: "quotes",
+            resource_type: isPDF ? "raw" : "image",
+          },
+          (error, result) => {
+            if (error) return reject(error);
+            resolve(result);
+          }
+        );
+        stream.end(req.file.buffer);
+      });
+
+      fileUrl = result.secure_url;
+      fileId = result.public_id;
+      fileType = isPDF ? "pdf" : "image";
     }
 
     const quote = await Quote.create({
       owner,
       book: bookId,
       text,
-      imageUrl,
-      imageId,
+      fileUrl,
+      fileId,
+      fileType,
     });
 
     res.status(201).json(quote);
   } catch (err) {
-    console.error('Error creating quote:', err);
-    res.status(500).json({ message: 'Server error creating quote' });
+    console.error("Error creating quote:", err);
+    res.status(500).json({ message: "Server error creating quote" });
   }
 };
+
 
 /**
  * GET /books/:bookId/quotes
