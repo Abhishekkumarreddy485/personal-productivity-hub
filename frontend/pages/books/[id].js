@@ -217,12 +217,35 @@ export default function BookDetail() {
     </button>
   </div>
 
-  {q.fileType === "image" ? (
+//   {q.fileType === "image" ? (
+//   <img src={q.fileUrl} alt="Quote" className={styles.quoteImage} />
+// ) : q.fileType === "pdf" ? (
+//   <button onClick={() => setPdfUrl(q.fileUrl)} className={styles.pdfLink}>
+//     📖 View PDF
+//   </button>
+// ) : q.text ? (
+//   <p className={styles.quoteText}>
+//     {q.text.split("\n").map((line, i) => (
+//       <span key={i}>
+//         {line}
+//         <br />
+//       </span>
+//     ))}
+//   </p>
+// ) : (
+//   <em>No content</em>
+// )}
+      {q.fileType === "image" && q.fileUrl ? (
   <img src={q.fileUrl} alt="Quote" className={styles.quoteImage} />
-) : q.fileType === "pdf" ? (
-  <button onClick={() => setPdfUrl(q.fileUrl)} className={styles.pdfLink}>
+) : q.fileType === "pdf" && q.fileUrl ? (
+  <button
+    onClick={() => setPdfUrl(q.fileUrl)}
+    className={styles.pdfLink}
+  >
     📖 View PDF
   </button>
+) : q.imageUrl ? (  // ✅ Support old images
+  <img src={q.imageUrl} alt="Quote" className={styles.quoteImage} />
 ) : q.text ? (
   <p className={styles.quoteText}>
     {q.text.split("\n").map((line, i) => (
@@ -235,6 +258,7 @@ export default function BookDetail() {
 ) : (
   <em>No content</em>
 )}
+
 
 
   <div className={styles.quoteAuthor}>{book.author}</div>
