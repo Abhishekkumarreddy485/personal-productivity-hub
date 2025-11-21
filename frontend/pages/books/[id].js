@@ -217,7 +217,7 @@ export default function BookDetail() {
 //     </button>
 //   </div>
 
-//   {q.fileType === "image" && q.fileUrl ? (
+
 //   <img src={q.fileUrl} alt="Quote" className={styles.quoteImage} />
 // ) : q.fileType === "pdf" && q.fileUrl ? (
 //   <button
