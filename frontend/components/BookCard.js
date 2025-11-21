@@ -5,7 +5,7 @@ import BookFormModal from './BookFormModal';
 import DeleteConfirmModal from './DeleteConfirmModal';
 import styles from '../styles/BookCard.module.css';
 import { FaTrashAlt, FaEdit } from 'react-icons/fa';
-import API from '../lib/api'; // ✅ use shared API instance
+import API from '../lib/api';
 
 export default function BookCard({ book }) {
   const router = useRouter();
@@ -16,12 +16,11 @@ export default function BookCard({ book }) {
   const handleDelete = async () => {
     setLoading(true);
     try {
-      const res = await API.delete(`/api/books/${book._id}`, {
+      await API.delete(`/api/books/${book._id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       });
-      // alert('Book deleted');
       router.reload();
     } catch (err) {
       console.error(err);
@@ -32,46 +31,81 @@ export default function BookCard({ book }) {
     }
   };
 
+  const openBook = () => {
+    router.push(`/books/${book._id}`);
+  };
+
   return (
     <>
-      <div className={styles.card}>
-        <CoverImage
-          title={book.title}
-          author={book.author}
-          url={book.coverImageUrl}
-          size={90}
-        />
-        <div className={styles.details}>
-          <h4 className={styles.title}>{book.title}</h4>
-          <p className={styles.meta}>
-            {book.author} • {book.year}
-          </p>
-          <p className={styles.summary}>{book.summary}</p>
+      <div className={styles.cardLink}>
+        <div
+          className={styles.card}
+          onClick={openBook}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') openBook();
+          }}
+        >
+          <CoverImage
+            title={book.title}
+            author={book.author}
+            url={book.coverImageUrl}
+          />
 
-          <div className={styles.actions}>
-            <a href={`/books/${book._id}`} className={styles.readLink}>
-              Read
-            </a>
-            <button onClick={() => setShowEditModal(true)} className={styles.iconBtn}>
-              <FaEdit />
-            </button>
-            <button
-              onClick={() => setShowDeleteModal(true)}
-              className={styles.iconBtn}
-              disabled={loading}
-            >
-              <FaTrashAlt />
-            </button>
+          <div className={styles.details}>
+            <div>
+              {/* You can render title/author description here if needed */}
+            </div>
+
+            <div className={styles.actions}>
+              {/* STOP navigation from card click for individual buttons */}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  openBook();
+                }}
+                className={styles.readLink}
+                type="button"
+              >
+                Read
+              </button>
+
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowEditModal(true);
+                }}
+                className={styles.iconBtn}
+                type="button"
+                aria-label="Edit book"
+              >
+                <FaEdit />
+              </button>
+
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowDeleteModal(true);
+                }}
+                className={styles.iconBtn}
+                disabled={loading}
+                type="button"
+                aria-label="Delete book"
+              >
+                <FaTrashAlt />
+              </button>
+            </div>
           </div>
         </div>
       </div>
 
       {showEditModal && (
-         <BookFormModal
-            book={book}
-            onClose={() => setShowEditModal(false)}
-            onSuccess={() => router.reload()}
-          />
+        <BookFormModal
+          book={book}
+          onClose={() => setShowEditModal(false)}
+          onSuccess={() => router.reload()}
+        />
       )}
 
       {showDeleteModal && (

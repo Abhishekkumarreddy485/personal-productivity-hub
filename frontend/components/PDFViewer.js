@@ -64,7 +64,7 @@ export default function PDFViewer({ url, onClose }) {
             // >
             <HTMLFlipBook
   width={650}
-  height={850}
+  height={900}
   // size="stretch"
   minWidth={315}
   maxWidth={1200}
