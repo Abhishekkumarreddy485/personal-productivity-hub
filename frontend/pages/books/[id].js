@@ -201,7 +201,53 @@ export default function BookDetail() {
             //     {new Date(q.createdAt).toLocaleString()}
             //   </div>
             // </div>
-            <div
+//             <div
+//   key={q._id}
+//   className={`${styles.quoteCard} ${q.imageUrl ? styles.imageQuote : styles[`bg${idx % 5}`]}`}
+// >
+//   <div className={styles.quoteActions}>
+//     <button onClick={() => handleToggleFavorite(q._id)} className={styles.favoriteBtn}>
+//       {q.favorite ? '★' : '☆'}
+//     </button>
+//     <button onClick={() => handleEditQuote(q)} className={styles.editBtn}>
+//       Edit
+//     </button>
+//     <button onClick={() => handleDeleteQuote(q._id)} className={styles.deleteBtn}>
+//       Delete
+//     </button>
+//   </div>
+
+//   {q.fileType === "image" && q.fileUrl ? (
+//   <img src={q.fileUrl} alt="Quote" className={styles.quoteImage} />
+// ) : q.fileType === "pdf" && q.fileUrl ? (
+//   <button
+//     onClick={() => setPdfUrl(q.fileUrl)}
+//     className={styles.pdfLink}
+//   >
+//     📖 View PDF
+//   </button>
+// ) : q.imageUrl ? (  // ✅ Support old images
+//   <img src={q.imageUrl} alt="Quote" className={styles.quoteImage} />
+// ) : q.text ? (
+//   <p className={styles.quoteText}>
+//     {q.text.split("\n").map((line, i) => (
+//       <span key={i}>
+//         {line}
+//         <br />
+//       </span>
+//     ))}
+//   </p>
+// ) : (
+//   <em>No content</em>
+// )}
+
+
+
+//   <div className={styles.quoteAuthor}>{book.author}</div>
+//   <div className={styles.quoteDate}>{new Date(q.createdAt).toLocaleString()}</div>
+// </div>
+
+          <div
   key={q._id}
   className={`${styles.quoteCard} ${q.imageUrl ? styles.imageQuote : styles[`bg${idx % 5}`]}`}
 >
@@ -217,53 +263,49 @@ export default function BookDetail() {
     </button>
   </div>
 
-//   {q.fileType === "image" ? (
-//   <img src={q.fileUrl} alt="Quote" className={styles.quoteImage} />
-// ) : q.fileType === "pdf" ? (
-//   <button onClick={() => setPdfUrl(q.fileUrl)} className={styles.pdfLink}>
-//     📖 View PDF
-//   </button>
-// ) : q.text ? (
-//   <p className={styles.quoteText}>
-//     {q.text.split("\n").map((line, i) => (
-//       <span key={i}>
-//         {line}
-//         <br />
-//       </span>
-//     ))}
-//   </p>
-// ) : (
-//   <em>No content</em>
-// )}
-      {q.fileType === "image" && q.fileUrl ? (
-  <img src={q.fileUrl} alt="Quote" className={styles.quoteImage} />
-) : q.fileType === "pdf" && q.fileUrl ? (
-  <button
-    onClick={() => setPdfUrl(q.fileUrl)}
-    className={styles.pdfLink}
-  >
-    📖 View PDF
-  </button>
-) : q.imageUrl ? (  // ✅ Support old images
-  <img src={q.imageUrl} alt="Quote" className={styles.quoteImage} />
-) : q.text ? (
-  <p className={styles.quoteText}>
-    {q.text.split("\n").map((line, i) => (
-      <span key={i}>
-        {line}
-        <br />
-      </span>
-    ))}
-  </p>
-) : (
-  <em>No content</em>
-)}
+  {/* ------------------------------------------ */}
+  {/* CLEAN, SAFE, STRICTLY VALID JSX CONDITIONALS */}
+  {/* ------------------------------------------ */}
 
+  {q.fileType === "image" && q.fileUrl && (
+    <img src={q.fileUrl} alt="Quote" className={styles.quoteImage} />
+  )}
 
+  {q.fileType === "pdf" && q.fileUrl && (
+    <button
+      onClick={() => setPdfUrl(q.fileUrl)}
+      className={styles.pdfLink}
+    >
+      📖 View PDF
+    </button>
+  )}
+
+  {/* Support old images */}
+  {!q.fileType && q.imageUrl && (
+    <img src={q.imageUrl} alt="Quote" className={styles.quoteImage} />
+  )}
+
+  {/* Text quotes */}
+  {q.text && (
+    <p className={styles.quoteText}>
+      {q.text.split("\n").map((line, i) => (
+        <span key={i}>
+          {line}
+          <br />
+        </span>
+      ))}
+    </p>
+  )}
+
+  {/* No content fallback */}
+  {!q.fileType && !q.imageUrl && !q.text && (
+    <em>No content</em>
+  )}
 
   <div className={styles.quoteAuthor}>{book.author}</div>
   <div className={styles.quoteDate}>{new Date(q.createdAt).toLocaleString()}</div>
 </div>
+
 
           ))}
 
