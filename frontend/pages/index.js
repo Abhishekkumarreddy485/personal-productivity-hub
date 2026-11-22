@@ -33,12 +33,12 @@ export default function Home() {
     { title: 'Mindset', description: 'Daily mindfulness & gratitude.', href: '/mindset' },
     { title: 'Style Board', description: 'Outfits, tags and inspiration.', href: '/style' },
     { title: 'Prompts', description: 'Better Outputs, amazing outputs with perfect prompts.', href: '/style' },
-    {title: 'Money Dashboard', description:'Track income, expenses, savings, investments, and net worth.', href: '/money'},
-    {title: 'Career Growth Tracker', description:'Track salary history, performance, projects, promotions, and achievements.', href: '/career'},
-    {title: 'Business & Side Income Lab', description: 'Manage business ideas, validate opportunities, track customers, revenue, and profit.', href: '/business'},
-    {title: 'Mental Models & Decision Journal', description: 'Practice first-principles thinking, analyze decisions, and learn from mistakes.', href: '/mental-models'},
-    {title: 'Personal Brand & Portfolio', description: 'Manage your LinkedIn, GitHub, technical projects, achievements, and networking.',href: '/portfolio'},
-    {title: 'Health & Performance',description:'Track exercise, nutrition, sleep, weight, and daily energy levels.',href: '/health'}
+    {title: 'Money Dashboard', description:'Track income, expenses, savings, investments, and net worth.', href: '/blog'},
+    {title: 'Career Growth Tracker', description:'Track salary history, performance, projects, promotions, and achievements.', href: '/blog'},
+    {title: 'Business & Side Income Lab', description: 'Manage business ideas, validate opportunities, track customers, revenue, and profit.', href: '/blog'},
+    {title: 'Mental Models & Decision Journal', description: 'Practice first-principles thinking, analyze decisions, and learn from mistakes.', href: '/blog'},
+    {title: 'Personal Brand & Portfolio', description: 'Manage your LinkedIn, GitHub, technical projects, achievements, and networking.',href: '/blog'},
+    {title: 'Health & Performance',description:'Track exercise, nutrition, sleep, weight, and daily energy levels.',href: '/blog'}
   ];
 
   return (
