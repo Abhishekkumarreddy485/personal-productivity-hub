@@ -1,11 +1,20 @@
 /* Layout.module.css */
 
+/* Prevent unwanted horizontal overflow */
 .container {
+  width: 100%;
   min-height: 100vh;
+  min-height: 100svh;
+  box-sizing: border-box;
+  overflow-x: clip;
   padding: 2rem;
-  background: linear-gradient(135deg, #dbeafe 0%, #f0f9ff 100%);
+  background: linear-gradient(
+    135deg,
+    #dbeafe 0%,
+    #f0f9ff 100%
+  );
   background-repeat: no-repeat;
-  background-attachment: fixed;
+  background-size: cover;
   display: flex;
   flex-direction: column;
   font-family: 'Segoe UI', Roboto, sans-serif;
