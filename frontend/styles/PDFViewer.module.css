@@ -160,3 +160,17 @@
 .pdfPage .react-pdf__Page__textContent textLayer {
   will-change: transform;
 }
+
+/* Mobile PDF page adjustment */
+@media (max-width: 768px) {
+  .page {
+    padding: 6px;
+    overflow: hidden;
+    box-sizing: border-box;
+  }
+
+  .pdfPage {
+    max-width: 100%;
+    overflow: hidden;
+  }
+}
