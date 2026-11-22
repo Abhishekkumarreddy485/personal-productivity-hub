@@ -1,3 +1,4 @@
+
 /* Layout.module.css */
 
 /* Prevent unwanted horizontal overflow */
@@ -7,60 +8,92 @@
   min-height: 100svh;
   box-sizing: border-box;
   overflow-x: clip;
+
   padding: 2rem;
+
   background: linear-gradient(
     135deg,
     #dbeafe 0%,
     #f0f9ff 100%
   );
+
   background-repeat: no-repeat;
   background-size: cover;
+
   display: flex;
   flex-direction: column;
+
   font-family: 'Segoe UI', Roboto, sans-serif;
   color: #1f2937;
 }
 
+/* Header */
 .header {
+  width: 100%;
   margin-bottom: 2rem;
+
   background-color: #ffffffcc;
   backdrop-filter: blur(6px);
+
   border-radius: 12px;
   padding: 1rem 2rem;
+
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
+/* Header title and navigation */
 .headerContent {
+  width: 100%;
   max-width: 1000px;
+
   margin: 0 auto;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
+
+  gap: 1rem;
 }
 
+/* Application title */
 .logo {
   font-size: 1.75rem;
   font-weight: 700;
   color: #0f172a;
+
+  margin: 0;
 }
 
+/* Navigation */
 .nav {
   display: flex;
+  align-items: center;
+  justify-content: center;
+
   gap: 1rem;
+  flex-shrink: 0;
 }
 
+/* Navigation links */
 .navLink {
   text-decoration: none;
   font-weight: 500;
+
   color: #1e3a8a;
+
   transition: all 0.2s ease;
+
   background: none;
   border: none;
+
   padding: 0.5rem 1rem;
   border-radius: 6px;
+
   cursor: pointer;
   font-family: inherit;
   font-size: 1rem;
+
+  white-space: nowrap;
 }
 
 .navLink:hover {
@@ -68,18 +101,161 @@
   color: #0284c7;
 }
 
+/* Logout button */
 .logoutButton {
   border: 1px solid #0284c7;
   background-color: #f0f9ff;
 }
 
-/* .main {
-  max-width: 1000px;
-  margin: 0 auto;
-  flex-grow: 1;
-  background-color: #ffffffcc;
-  backdrop-filter: blur(4px);
-  border-radius: 12px;
-  padding: 2rem;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
-} */
+/* Main content */
+.main {
+  width: 100%;
+  min-width: 0;
+}
+
+/* =====================================
+   TABLET RESPONSIVE
+===================================== */
+
+@media (max-width: 768px) {
+  .container {
+    padding: 1.25rem;
+  }
+
+  .header {
+    padding: 1rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .headerContent {
+    gap: 0.75rem;
+  }
+
+  .logo {
+    font-size: 1.4rem;
+  }
+
+  .nav {
+    gap: 0.35rem;
+  }
+
+  .navLink {
+    padding: 0.5rem 0.7rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* =====================================
+   MOBILE RESPONSIVE
+===================================== */
+
+@media (max-width: 600px) {
+  .container {
+    width: 100%;
+    min-height: 100vh;
+    min-height: 100svh;
+
+    padding: 12px;
+
+    background: linear-gradient(
+      160deg,
+      #dbeafe 0%,
+      #eaf4ff 50%,
+      #f0f9ff 100%
+    );
+
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+
+  .header {
+    width: 100%;
+    padding: 14px 10px;
+    margin-bottom: 18px;
+
+    border-radius: 12px;
+  }
+
+  /* Stack title and navigation vertically */
+  .headerContent {
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 12px;
+  }
+
+  /* Keep title properly centered */
+  .logo {
+    width: 100%;
+
+    font-size: 1.35rem;
+    line-height: 1.4;
+
+    text-align: center;
+
+    margin: 0;
+  }
+
+  /* Keep all navigation buttons in one row */
+  .nav {
+    width: 100%;
+
+    display: flex;
+    flex-direction: row;
+
+    align-items: center;
+    justify-content: center;
+
+    flex-wrap: nowrap;
+
+    gap: 6px;
+  }
+
+  .navLink {
+    padding: 8px 12px;
+
+    font-size: 0.88rem;
+    line-height: 1.3;
+
+    white-space: nowrap;
+    text-align: center;
+  }
+
+  .logoutButton {
+    border-radius: 6px;
+  }
+
+  .main {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+/* Very small mobile screens */
+@media (max-width: 360px) {
+  .container {
+    padding: 8px;
+  }
+
+  .header {
+    padding: 12px 6px;
+  }
+
+  .logo {
+    font-size: 1.2rem;
+  }
+
+  .nav {
+    gap: 3px;
+  }
+
+  .navLink {
+    padding: 7px 9px;
+    font-size: 0.82rem;
+  }
+}
