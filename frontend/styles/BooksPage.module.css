@@ -42,18 +42,65 @@
   cursor: pointer;
 }
 
-/* .grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1rem;
-} */
-
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* responsive grid */
   gap: 1.5rem;
   justify-items: center;
   padding: 1rem 0;
+}
+
+
+/* Mobile responsive adjustments */
+@media (max-width: 600px) {
+  .topBar {
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .searchInput {
+    flex: 1;
+    min-width: 0;
+    width: auto;
+  }
+
+  .searchButton {
+    flex-shrink: 0;
+  }
+
+  .label {
+    margin-left: 0;
+    flex: 1 1 100%;
+    justify-content: center;
+  }
+
+  .addSampleWrapper {
+    width: 100%;
+    margin-left: 0;
+    flex: 1 1 100%;
+  }
+
+  .addSampleButton {
+    width: 100%;
+    padding: 12px;
+    white-space: normal;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .searchInput {
+    font-size: 12px;
+  }
+
+  .addSampleButton {
+    font-size: 13px;
+  }
 }
 
 
